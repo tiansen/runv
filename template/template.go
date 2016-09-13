@@ -32,7 +32,7 @@ type TemplateVmConfig struct {
 	Initrd    string `json:"initrd"`
 }
 
-func CreateTemplateVM(statePath, vmName string, cpu, mem int, kernel, initrd string) (t *TemplateVmConfig, err error) {
+func CreateTemplateVM(statePath, vmName string, cpu, mem int, kernel, initrd string, bios string, cbfs string) (t *TemplateVmConfig, err error) {
 	defer func() {
 		if err != nil {
 			(&TemplateVmConfig{StatePath: statePath}).Destroy()
@@ -68,6 +68,8 @@ func CreateTemplateVM(statePath, vmName string, cpu, mem int, kernel, initrd str
 		DevicesStatePath: statePath + "/state",
 		Kernel:           kernel,
 		Initrd:           initrd,
+		Bios:             bios,
+		Cbfs:             Cbfs,
 	}
 	vm, err := hypervisor.GetVm(vmName, b, true, false)
 	if err != nil {
@@ -96,6 +98,8 @@ func CreateTemplateVM(statePath, vmName string, cpu, mem int, kernel, initrd str
 		Memory:    mem,
 		Kernel:    kernel,
 		Initrd:    initrd,
+		Bios:      bios,
+		Cbfs:      cbfs,
 	}
 
 	configData, err := json.MarshalIndent(config, "", "\t")

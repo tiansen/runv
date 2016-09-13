@@ -60,6 +60,8 @@ var createTemplateCommand = cli.Command{
 		}
 		kernel := absOption("kernel")
 		initrd := absOption("initrd")
+		bios := absOption("bios")
+		cbfs := absOption("cbfs")
 		template := absOption("template")
 
 		if err := os.MkdirAll(template, 0700); err != nil {
@@ -80,7 +82,7 @@ var createTemplateCommand = cli.Command{
 			os.Exit(-1)
 		}
 
-		if _, err := templatecore.CreateTemplateVM(template, "", context.Int("cpu"), context.Int("mem"), kernel, initrd); err != nil {
+		if _, err := templatecore.CreateTemplateVM(template, "", context.Int("cpu"), context.Int("mem"), kernel, initrd, bios ,cbfs); err != nil {
 			fmt.Printf("Failed to create the template: %v\n", err)
 			os.Exit(-1)
 		}

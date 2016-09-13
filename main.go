@@ -95,6 +95,14 @@ func main() {
 			Usage: "runv-compatible initrd for the container",
 		},
 		cli.StringFlag{
+			Name:  "cbfs",
+			Usage: "runv-compatible cbfs for the container",
+		},
+		cli.StringFlag{
+			Name:  "bios",
+			Usage: "runv-compatible bios for the container",
+		},
+		cli.StringFlag{
 			Name:  "template",
 			Usage: "path to the template vm state directory",
 		},

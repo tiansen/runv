@@ -25,7 +25,8 @@ func New(templateRoot string, cpu, mem int, kernel, initrd string) base.Factory 
 			break
 		}
 	}
-	s, err := template.CreateTemplateVM(templateRoot+"/"+vmName, vmName, cpu, mem, kernel, initrd)
+	var bios, cbfs string
+	s, err := template.CreateTemplateVM(templateRoot+"/"+vmName, vmName, cpu, mem, kernel, initrd, bios, cbfs)
 	if err != nil {
 		glog.Infof("failed to create template factory: %v", err)
 		glog.Infof("use direct factory instead")

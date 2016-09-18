@@ -123,7 +123,7 @@ var ContainerdCommand = cli.Command{
 		if context.Bool("solo-namespaced") {
 			go namespaceShare(sv, containerdDir, stateDir)
 		}
-
+                //获取命令行指定的监听地址。这个就是一个gRPC服务。
 		if err = daemon(sv, context.String("listen")); err != nil {
 			glog.Infof("%v", err)
 			os.Exit(1)
@@ -185,6 +185,8 @@ func startServer(address string, sv *supervisor.Supervisor) (*grpc.Server, error
 	if err != nil {
 		return nil, err
 	}
+	//建立连接，监听的是一个socket文件/run/runv-containerd/containerd.sock
+	//docker启动的时候是将信息发送到这个socket
 	s := grpc.NewServer()
 	types.RegisterAPIServer(s, server.NewServer(sv))
 	go func() {

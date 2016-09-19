@@ -15,6 +15,7 @@ func newNetworkAddSession(ctx *hypervisor.VmContext, qc *QemuContext, fd uint64,
 	commands := make([]*QmpCommand, 3)
 	scm := syscall.UnixRights(int(fd))
 	glog.V(1).Infof("send net to qemu at %d", int(fd))
+	//send cmd with scm (24 bytes) (1) {"execute":"getfd","arguments":{"fdname":"fdeth0"}}
 	commands[0] = &QmpCommand{
 		Execute: "getfd",
 		Arguments: map[string]interface{}{
@@ -22,12 +23,15 @@ func newNetworkAddSession(ctx *hypervisor.VmContext, qc *QemuContext, fd uint64,
 		},
 		Scm: scm,
 	}
+	//sending command (1) {"execute":"netdev_add","arguments":{"fd":"fdeth0","id":"eth0","type":"tap"}}
 	commands[1] = &QmpCommand{
 		Execute: "netdev_add",
 		Arguments: map[string]interface{}{
 			"type": "tap", "id": device, "fd": "fd" + device,
 		},
 	}
+	//sending command (1) {"execute":"device_add",
+	// "arguments":{"addr":"0x5","bus":"pci.0","driver":"virtio-net-pci","id":"eth0","mac":"52:54:a5:4a:68:dc","netdev":"eth0"}}
 	commands[2] = &QmpCommand{
 		Execute: "device_add",
 		Arguments: map[string]interface{}{

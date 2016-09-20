@@ -56,7 +56,7 @@ func setupNsListener() {
 		glog.Error(err)
 		return
 	}
-
+	//hyperpod.go 进行接收
 	/* send interface info to containerd */
 	infos := collectionInterfaceInfo()
 	if err := enc.Encode(infos); err != nil {
@@ -82,19 +82,19 @@ func setupNsListener() {
 
 func collectionInterfaceInfo() []supervisor.InterfaceInfo {
 	infos := []supervisor.InterfaceInfo{}
-
+	//相当于ip link show
 	links, err := netlink.LinkList()
 	if err != nil {
 		glog.Error(err)
 		return infos
 	}
-
+	
 	for _, link := range links {
 		if link.Type() != "veth" {
 			// lo is here too
 			continue
 		}
-
+		//显示所有的网络设备 相当于ip addr show
 		addrs, err := netlink.AddrList(link, netlink.FAMILY_V4)
 		if err != nil {
 			glog.Error(err)
@@ -103,6 +103,7 @@ func collectionInterfaceInfo() []supervisor.InterfaceInfo {
 
 		for _, addr := range addrs {
 			info := supervisor.InterfaceInfo{
+				//Mac:       link.Attrs().HardwareAddr.String(), //添加MAC地址的信息 TS 可能需要添加这个数据来保存MAC信息，后续可以先测试一下
 				Ip:        addr.IPNet.String(),
 				Index:     link.Attrs().Index,
 				PeerIndex: link.Attrs().ParentIndex,

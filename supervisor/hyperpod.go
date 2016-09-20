@@ -53,8 +53,8 @@ type HyperPod struct {
 }
 
 type InterfaceInfo struct {
-	Index     int
-	PeerIndex int
+	Index     int    // tap设备的网卡编号
+	PeerIndex int	 // tap设备的master的网卡编号
 	Ip        string
 }
 

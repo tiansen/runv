@@ -142,6 +142,8 @@ func (hp *HyperPod) initPodNetwork(c *Container) error {
 	}
 
 	infos := []InterfaceInfo{}
+	//从输入流中读取相应的数据，存储在对应的interface中。 TS
+	// 对应nslistener.go中的Encode的info
 	/* read nic information of ns from pipe */
 	err := listener.dec.Decode(&infos)
 	if err != nil {
@@ -163,8 +165,11 @@ func (hp *HyperPod) initPodNetwork(c *Container) error {
 		}
 	}
 
+	//按日志提示，在这一步之前就已经将IP，MAC查询完毕。所以后面的可以不用做太大的改变。
+	//interface configuration of pod ns is [{225 226 10.2.0.26/24 fa:16:3e:bd:e1:5f}] 226是网卡编号 使用kuryr之后
 	glog.Infof("interface configuration of pod ns is %v", infos)
 	for idx, info := range infos {
+		//获取tap/qbr设备信息 TS
 		bridge, err := GetBridgeFromIndex(info.PeerIndex)
 		if err != nil {
 			glog.Error(err)

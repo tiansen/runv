@@ -80,6 +80,7 @@ func setupNsListener() {
 	setupNetworkNsTrap(netNs2Containerd)
 }
 
+// 网络匿名空间的信息在这里都可以查询得到。不是veth设备，然后还要把连接关闭。
 func collectionInterfaceInfo() []supervisor.InterfaceInfo {
 	infos := []supervisor.InterfaceInfo{}
 	//相当于ip link show
@@ -90,6 +91,7 @@ func collectionInterfaceInfo() []supervisor.InterfaceInfo {
 	}
 	
 	for _, link := range links {
+		//过滤lo设备
 		if link.Type() != "veth" {
 			// lo is here too
 			continue

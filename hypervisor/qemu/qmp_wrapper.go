@@ -1,5 +1,8 @@
 package qemu
-
+/*
+	与qmp_handler是相对应的。
+	wrapper生成command，handler执行相应的命令。
+*/
 import (
 	"fmt"
 	"strconv"
@@ -35,6 +38,7 @@ func defaultRespond(result chan<- hypervisor.VmEvent, callback hypervisor.VmEven
 
 func newDiskAddSession(ctx *hypervisor.VmContext, qc *QemuContext, name, sourceType, filename, format string, id int) {
 	commands := make([]*QmpCommand, 2)
+	// 创建相关的网络设备
 	commands[0] = &QmpCommand{
 		Execute: "human-monitor-command",
 		Arguments: map[string]interface{}{

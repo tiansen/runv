@@ -300,7 +300,7 @@ func qmpHandler(ctx *hypervisor.VmContext) {
 			}
 		case QMP_FINISH:
 			glog.Infof("session finished, buffer size %d", len(buf))
-			r := msg.(*QmpFinish)
+			r := msg.(*QmpFinish)       // QmpFinish实现了MessageType这个接口。
 			if r.success {
 				glog.V(1).Info("success ")
 				r.respond(nil)
@@ -342,6 +342,7 @@ func qmpHandler(ctx *hypervisor.VmContext) {
 			timer.Stop()
 			init := msg.(*QmpInit)
 			conn = init.conn
+			// handler的重新赋值。
 			handler = loop
 			glog.Info("QMP initialzed, go into main QMP loop")
 
@@ -371,11 +372,12 @@ func qmpHandler(ctx *hypervisor.VmContext) {
 			buf = append(buf, msg.(*QmpSession))
 		}
 	}
-
+	// 首先执行的是initializing，在执行过程中会将handler赋值为loop，进行循环接收。
 	handler = initializing
-
+	
+	// 进入一个循环，获取要执行的命令。网路的初始化。
 	for handler != nil {
-		msg, ok := <-qc.qmp
+		msg, ok := <-qc.qmp   // 获取管道数据
 		if !ok {
 			glog.Info("QMP channel closed, Quit qmp handler")
 			break
